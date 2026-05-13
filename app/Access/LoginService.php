@@ -13,6 +13,7 @@ use BookStack\Permissions\Permission;
 use BookStack\Theming\ThemeEvents;
 use BookStack\Users\Models\User;
 use Exception;
+use Illuminate\Support\Str;
 
 class LoginService
 {
@@ -47,6 +48,7 @@ class LoginService
 
         $this->clearLastLoginAttempted();
         auth()->login($user, $remember);
+        $this->setSessionToken($user);
         Activity::add(ActivityType::AUTH_LOGIN, "{$method}; {$user->logDescriptor()}");
         Theme::dispatch(ThemeEvents::AUTH_LOGIN, $method, $user);
 
@@ -129,6 +131,17 @@ class LoginService
     protected function clearLastLoginAttempted(): void
     {
         session()->remove(self::LAST_LOGIN_ATTEMPTED_SESSION_KEY);
+    }
+
+    /**
+     * Generate a new session token for the user, invalidating all other sessions.
+     */
+    protected function setSessionToken(User $user): void
+    {
+        $token = Str::random(40);
+        $user->session_token = $token;
+        $user->save();
+        session()->put('single_session_token', $token);
     }
 
     /**

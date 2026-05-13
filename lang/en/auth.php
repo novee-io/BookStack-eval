@@ -114,4 +114,6 @@ return [
     'mfa_verify_backup_code_enter_here' => 'Enter backup code here',
     'mfa_verify_totp_desc' => 'Enter the code, generated using your mobile app, below:',
     'mfa_setup_login_notification' => 'Multi-factor method configured, Please now login again using the configured method.',
+
+    'session_expired' => 'Your session has ended because your account was signed in from another location.',
 ];
